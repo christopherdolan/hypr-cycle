@@ -19,7 +19,7 @@ Written entirely by ChatGPT.
 
 1. Clone the repo:
    ```bash
-   git clone https://github.com/your-username/hypr-cycle
+   git clone https://github.com/christopherdolan/hypr-cycle
    cd hypr-cycle
    ```
 
