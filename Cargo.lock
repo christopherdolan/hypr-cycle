@@ -53,6 +53,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.98"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
+
+[[package]]
 name = "clap"
 version = "4.5.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -106,8 +112,9 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hypr-cycle"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
+ "anyhow",
  "clap",
  "serde",
  "serde_json",

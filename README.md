@@ -34,8 +34,8 @@ Written entirely by ChatGPT.
 ## 🎮 Usage
 
 ```bash
-hypr-cycle --direction next
-hypr-cycle --direction prev
+hypr-cycle next
+hypr-cycle prev
 ```
 
 This will cycle to the next or previous workspace **on the monitor that currently has keyboard focus**.
