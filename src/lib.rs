@@ -27,7 +27,7 @@ pub fn get_workspaces_for_monitor(monitor: &str) -> anyhow::Result<Vec<Workspace
         .args(["workspaces", "-j"])
         .output()?;
     let mut workspaces: Vec<Workspace> = serde_json::from_slice(&workspaces_out.stdout)?;
-    workspaces.retain(|w| w.monitor == monitor);
+    workspaces.retain(|w| w.monitor == monitor && w.id > 0);
     workspaces.sort_by_key(|w| w.id);
     Ok(workspaces)
 }
