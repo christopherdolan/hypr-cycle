@@ -4,7 +4,7 @@ A fast, minimal Rust utility to cycle through workspaces on the **currently focu
 
 ---
 
-## 🔧 Features
+## Features
 
 - Cycles only the workspaces **bound to the focused monitor**
 - Wraps around when reaching the end or beginning
@@ -13,7 +13,7 @@ A fast, minimal Rust utility to cycle through workspaces on the **currently focu
 
 ---
 
-## 🚀 Installation
+## Installation
 
 1. Clone the repo:
    ```bash
@@ -29,7 +29,7 @@ A fast, minimal Rust utility to cycle through workspaces on the **currently focu
 
 ---
 
-## 🎮 Usage
+## Usage
 
 ```bash
 hypr-cycle next
@@ -40,7 +40,7 @@ This will cycle to the next or previous workspace **on the monitor that currentl
 
 ---
 
-## 🖥️ Example Hyprland Config
+## Example Hyprland Config
 
 If you want to changge workspaces using Mod+Tab and Mod+Shift+Tab, add these bindings to your `~/.config/hypr/hyprland.conf`:
 
@@ -51,7 +51,7 @@ bind = $mod SHIFT, Tab, exec, hypr-cycle prev
 
 ---
 
-## 🖥️ Example Waybar Config
+## Example Waybar Config
 
 If you want to change workspaces on waybar using your mouse wheel, add these (particularly `on-scroll-up` and `on-scroll-down`) to your `~/.config/waybar/config.jsonc`:
 
@@ -67,19 +67,19 @@ If you want to change workspaces on waybar using your mouse wheel, add these (pa
 
 ---
 
-## 🛠️ Dependencies
+## Dependencies
 
 - [Hyprland](https://github.com/hyprwm/Hyprland)
 - Rust (for building only)
 
 ---
 
-## 📜 License
+## License
 
 MIT license. See `LICENSE` file.
 
 ---
 
-## 🤝 Contributions
+## Contributions
 
 PRs and suggestions welcome! This is a minimal utility, but if you have an idea to make it more powerful or efficient, feel free to open an issue or PR.
