@@ -1,47 +1,45 @@
-use serde::Deserialize;
-use std::process::Command;
+use hyprrust::commands::prelude::*;
+use hyprrust::HyprlandConnection;
+use hyprrust::data::{Monitors,Workspaces};
 
-#[derive(Deserialize)]
-pub struct Workspace {
-    pub id: i32,
-    pub monitor: String,
-}
-
-#[derive(Deserialize)]
-pub struct Monitor {
-    pub name: String,
-    pub focused: bool,
-}
-
-pub fn get_focused_monitor() -> anyhow::Result<Monitor> {
-    let monitors_out = Command::new("hyprctl").args(["monitors", "-j"]).output()?;
-    let monitors: Vec<Monitor> = serde_json::from_slice(&monitors_out.stdout)?;
-    monitors
-        .into_iter()
+pub fn get_focused_monitor(conn: &HyprlandConnection) -> anyhow::Result<String> {
+    let monitors = conn.get_sync::<Monitors>()?;
+    let name = &monitors
+        .iter()
         .find(|m| m.focused)
-        .ok_or_else(|| anyhow::anyhow!("No focused monitor found"))
+        .ok_or("No focused monitor found")
+        .unwrap()
+        .name;
+    Ok(name.to_owned())
 }
 
-pub fn get_workspaces_for_monitor(monitor: &str) -> anyhow::Result<Vec<Workspace>> {
-    let workspaces_out = Command::new("hyprctl")
-        .args(["workspaces", "-j"])
-        .output()?;
-    let mut workspaces: Vec<Workspace> = serde_json::from_slice(&workspaces_out.stdout)?;
-    workspaces.retain(|w| w.monitor == monitor && w.id > 0);
-    workspaces.sort_by_key(|w| w.id);
-    Ok(workspaces)
+pub fn get_workspaces_for_monitor(conn: &HyprlandConnection, monitor: &String) -> anyhow::Result<Vec<i64>> {
+    let workspaces = conn.get_sync::<Workspaces>()?;
+    let mut workspace_ids_for_monitor : Vec<i64> = workspaces
+        .iter()
+        .filter(|w| w.monitor.eq(monitor))
+        .map(|w| w.id)
+        .collect::<Vec<i64>>();
+    if workspace_ids_for_monitor.is_empty() {
+        return Err(anyhow::anyhow!("No workspaces found for monitor: {}", monitor));
+    }
+    workspace_ids_for_monitor.sort();
+    Ok(workspace_ids_for_monitor.to_owned())
 }
 
-pub fn get_current_workspace() -> anyhow::Result<Workspace> {
-    let current_ws_out = Command::new("hyprctl")
-        .args(["activeworkspace", "-j"])
-        .output()?;
-    Ok(serde_json::from_slice(&current_ws_out.stdout)?)
+pub fn get_current_workspace(conn: &HyprlandConnection) -> anyhow::Result<i64> {
+    let focused_monitor_name = get_focused_monitor(conn)?;
+    let monitors = conn.get_sync::<Monitors>()?;
+    let focused_monitor = monitors
+        .iter()
+        .find(|m| m.name == focused_monitor_name)
+        .ok_or("Focused monitor not found")
+        .unwrap();
+    let active_workspace_id = focused_monitor.active_workspace.id;
+    Ok(active_workspace_id)
 }
 
-pub fn switch_to_workspace(id: i32) -> anyhow::Result<()> {
-    Command::new("hyprctl")
-        .args(["dispatch", "workspace", &id.to_string()])
-        .status()?;
+pub fn switch_to_workspace(conn: &HyprlandConnection, id: i64) -> anyhow::Result<()> {
+    conn.send_command_sync(&go_to_work_space(WorkspaceArgument::ID(id)))?;
     Ok(())
 }

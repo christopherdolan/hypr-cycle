@@ -1,14 +1,13 @@
 [package]
 name = "hypr-cycle"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Chris Dolan <aelien27@gmail.com>"]
 edition = "2021"
-license = "0BSD"
+license = "MIT"
 repository = "https://github.com/christopherdolan/hypr-cycle"
 description = "A fast and monitor-aware workspace cycler for Hyprland, written in Rust."
 
 [dependencies]
 anyhow = "1"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
 clap = { version = "4", features = ["derive"] }
+hyprrust = { version = "0.2.0", features = ["sync"], default-features = false }

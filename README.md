@@ -2,15 +2,13 @@
 
 A fast, minimal Rust utility to cycle through workspaces on the **currently focused monitor** in [Hyprland](https://github.com/hyprwm/Hyprland). Unlike `hyprctl dispatch workspace e+1`, this tool avoids switching workspaces on the wrong monitor in multi-monitor setups.
 
-Written entirely by ChatGPT.
-
 ---
 
 ## 🔧 Features
 
 - Cycles only the workspaces **bound to the focused monitor**
 - Wraps around when reaching the end or beginning
-- Fast, clean, and dependency-free (uses `hyprctl` under the hood)
+- Fast, clean, and dependency-free
 - Written in Rust for performance and reliability
 
 ---
@@ -44,11 +42,27 @@ This will cycle to the next or previous workspace **on the monitor that currentl
 
 ## 🖥️ Example Hyprland Config
 
-Add these bindings to your `~/.config/hypr/hyprland.conf`:
+If you want to changge workspaces using Mod+Tab and Mod+Shift+Tab, add these bindings to your `~/.config/hypr/hyprland.conf`:
 
 ```ini
-bind = $mod, Tab, exec, hypr-cycle --direction next
-bind = $mod SHIFT, Tab, exec, hypr-cycle --direction prev
+bind = $mod, Tab, exec, hypr-cycle next
+bind = $mod SHIFT, Tab, exec, hypr-cycle prev
+```
+
+---
+
+## 🖥️ Example Waybar Config
+
+If you want to change workspaces on waybar using your mouse wheel, add these (particularly `on-scroll-up` and `on-scroll-down`) to your `~/.config/waybar/config.jsonc`:
+
+```jsonc
+        "hyprland/window": {
+            "icon": true,
+            "format": "{title}",
+            "on-scroll-up":"hypr-cycle prev",
+            "on-scroll-down":"hypr-cycle next",
+            "tooltip": true,
+        },
 ```
 
 ---
@@ -56,14 +70,13 @@ bind = $mod SHIFT, Tab, exec, hypr-cycle --direction prev
 ## 🛠️ Dependencies
 
 - [Hyprland](https://github.com/hyprwm/Hyprland)
-- `hyprctl` in your `PATH`
 - Rust (for building only)
 
 ---
 
 ## 📜 License
 
-BSD 0-Clause license. See `LICENSE` file.
+MIT license. See `LICENSE` file.
 
 ---
 

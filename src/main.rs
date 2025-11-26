@@ -1,5 +1,6 @@
 use clap::Parser;
 use hypr_cycle::*;
+use hyprrust::HyprlandConnection;
 
 #[derive(Parser)]
 struct Args {
@@ -9,12 +10,15 @@ struct Args {
 
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
-    let monitor = get_focused_monitor()?;
-    let workspaces = get_workspaces_for_monitor(&monitor.name)?;
-    let current_ws = get_current_workspace()?;
+
+    let conn = HyprlandConnection::current()?;
+
+    let monitor = get_focused_monitor(&conn)?;
+    let workspaces = get_workspaces_for_monitor(&conn, &monitor)?;
+    let current_ws = get_current_workspace(&conn)?;
     let idx = workspaces
         .iter()
-        .position(|w| w.id == current_ws.id)
+        .position(|w| w == &current_ws)
         .ok_or_else(|| anyhow::anyhow!("Current workspace not found"))?;
 
     let next_idx = if args.direction == "next" {
@@ -23,7 +27,7 @@ fn main() -> anyhow::Result<()> {
         (idx + workspaces.len() - 1) % workspaces.len()
     };
 
-    let target = workspaces[next_idx].id;
-    switch_to_workspace(target)?;
+    let target = workspaces[next_idx];
+    switch_to_workspace(&conn, target)?;
     Ok(())
 }
