@@ -71,15 +71,14 @@ bind = $mod SHIFT, Tab, exec, hypr-cycle prev
 
 ## Example Waybar Config
 
-If you want to change workspaces on waybar using your mouse wheel, add these (particularly `on-scroll-up` and `on-scroll-down`) to your `~/.config/waybar/config.jsonc`:
+If you want to change workspaces on Waybar using your mouse wheel, add these to your `~/.config/waybar/config.jsonc`:
 
 ```jsonc
-        "hyprland/window": {
-            "icon": true,
-            "format": "{title}",
+        "hyprland/workspaces": {
+            // ...
             "on-scroll-up":"hypr-cycle prev",
             "on-scroll-down":"hypr-cycle next",
-            "tooltip": true,
+            // ...
         },
 ```
 
