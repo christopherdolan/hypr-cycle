@@ -15,6 +15,24 @@ A fast, minimal Rust utility to cycle through workspaces on the **currently focu
 
 ## Installation
 
+### Arch Linux (via the AUR)
+
+1. Clone the repo:
+  ``` bash
+  git clone https://aur.archlinux.org/hypr-cycle.git
+  ```
+
+2. Make and install
+
+  ``` bash
+  cd hypr-cycle
+  makepkg -si
+  ```
+
+... or just install `hypr-cycle` via your favorite AUR helper.
+
+### From Source
+
 1. Clone the repo:
    ```bash
    git clone https://github.com/christopherdolan/hypr-cycle
@@ -36,13 +54,13 @@ hypr-cycle next
 hypr-cycle prev
 ```
 
-This will cycle to the next or previous workspace **on the monitor that currently has keyboard focus**.
+This will cycle to the next or previous numbered workspace **on the monitor that currently has keyboard focus**.
 
 ---
 
 ## Example Hyprland Config
 
-If you want to changge workspaces using Mod+Tab and Mod+Shift+Tab, add these bindings to your `~/.config/hypr/hyprland.conf`:
+If you want to change workspaces using Mod+Tab and Mod+Shift+Tab, add these bindings to your `~/.config/hypr/hyprland.conf`:
 
 ```ini
 bind = $mod, Tab, exec, hypr-cycle next
