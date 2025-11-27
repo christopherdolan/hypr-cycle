@@ -9,25 +9,25 @@ struct Args {
 }
 
 fn main() -> anyhow::Result<()> {
-    let args = Args::parse();
+    let args: Args = Args::parse();
 
-    let conn = HyprlandConnection::current()?;
+    let conn: HyprlandConnection = HyprlandConnection::current()?;
 
-    let monitor = get_focused_monitor(&conn)?;
-    let workspaces = get_workspaces_for_monitor(&conn, &monitor)?;
-    let current_ws = get_current_workspace(&conn)?;
-    let idx = workspaces
+    let monitor: String = get_focused_monitor_name(&conn)?;
+    let workspaces: Vec<i64> = get_workspace_ids_for_monitor(&conn, &monitor)?;
+    let current_ws: i64 = get_current_workspace_id(&conn)?;
+    let idx: usize = workspaces
         .iter()
         .position(|w| w == &current_ws)
         .ok_or_else(|| anyhow::anyhow!("Current workspace not found"))?;
 
-    let next_idx = if args.direction == "next" {
+    let next_idx: usize = if args.direction == "next" {
         (idx + 1) % workspaces.len()
     } else {
         (idx + workspaces.len() - 1) % workspaces.len()
     };
 
-    let target = workspaces[next_idx];
+    let target: i64 = workspaces[next_idx];
     switch_to_workspace(&conn, target)?;
     Ok(())
 }
