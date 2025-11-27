@@ -29,7 +29,7 @@ pub fn get_workspaces_for_monitor(conn: &HyprlandConnection, monitor: &OwnedMoni
     Ok(workspaces_for_monitor.to_owned())
 }
 
-pub fn get_current_workspace_id(conn: &HyprlandConnection) -> anyhow::Result<OwnedWorkspace> {
+pub fn get_current_workspace(conn: &HyprlandConnection) -> anyhow::Result<OwnedWorkspace> {
     let focused_monitor = get_focused_monitor(conn)?;
     let active_workspace = focused_monitor.active_workspace;
     Ok(active_workspace)

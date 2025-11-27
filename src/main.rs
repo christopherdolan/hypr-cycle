@@ -15,7 +15,7 @@ fn main() -> anyhow::Result<()> {
 
     let monitor: OwnedMonitor = get_focused_monitor(&conn)?;
     let workspaces: Vec<OwnedWorkspace> = get_workspaces_for_monitor(&conn, &monitor)?;
-    let current_ws: OwnedWorkspace = get_current_workspace_id(&conn)?;
+    let current_ws: OwnedWorkspace = get_current_workspace(&conn)?;
     let idx: usize = workspaces
         .iter()
         .position(|w| w == &current_ws)
