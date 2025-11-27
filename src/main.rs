@@ -1,5 +1,8 @@
-use clap::Parser;
+use crate::connection::{HyprlandClient,RealHyprlandClient};
+use crate::domain::{OwnedMonitor,OwnedWorkspace};
 use hypr_cycle::*;
+
+use clap::Parser;
 use hyprrust::HyprlandConnection;
 
 #[derive(Parser)]
@@ -11,11 +14,11 @@ struct Args {
 fn main() -> anyhow::Result<()> {
     let args: Args = Args::parse();
 
-    let conn: HyprlandConnection = HyprlandConnection::current()?;
+    let conn: &mut dyn HyprlandClient = &mut RealHyprlandClient::new(HyprlandConnection::current()?);
 
-    let monitor: OwnedMonitor = get_focused_monitor(&conn)?;
-    let workspaces: Vec<OwnedWorkspace> = get_workspaces_for_monitor(&conn, &monitor)?;
-    let current_ws: OwnedWorkspace = get_current_workspace(&conn)?;
+    let monitor: OwnedMonitor = get_focused_monitor(conn)?;
+    let workspaces: Vec<OwnedWorkspace> = get_workspaces_for_monitor(conn, &monitor)?;
+    let current_ws: OwnedWorkspace = get_current_workspace(conn)?;
     let idx: usize = workspaces
         .iter()
         .position(|w| w == &current_ws)
@@ -28,6 +31,6 @@ fn main() -> anyhow::Result<()> {
     };
 
     let target: OwnedWorkspace = workspaces[next_idx].clone();
-    switch_to_workspace(&conn, &target)?;
+    switch_to_workspace(conn, &target)?;
     Ok(())
 }
