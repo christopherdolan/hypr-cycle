@@ -4,37 +4,53 @@ pub mod domain;
 pub use domain::{OwnedMonitor,OwnedWorkspace};
 pub use connection::HyprlandClient;
 
-pub fn get_focused_monitor(conn: &mut dyn HyprlandClient) -> anyhow::Result<OwnedMonitor> {
+pub fn get_focused_monitor(conn: &mut dyn HyprlandClient)
+    -> anyhow::Result<OwnedMonitor> {
+
     let monitors = conn.get_monitors()?;
     let monitor = monitors
         .iter()
-        .find(|m| m.focused)
+        .find(|m| m.focused())
         .ok_or_else(|| anyhow::anyhow!("No focused monitor found"))?;
     Ok(monitor.clone())
 }
 
-pub fn get_workspaces_for_monitor(conn: &mut dyn HyprlandClient, monitor: &OwnedMonitor) -> anyhow::Result<Vec<OwnedWorkspace>> {
+pub fn get_workspaces_for_monitor(
+    conn: &mut dyn HyprlandClient,
+    monitor: &OwnedMonitor
+) -> anyhow::Result<Vec<OwnedWorkspace>> {
+
     let workspaces = conn.get_workspaces()?;
     let mut workspaces_for_monitor : Vec<OwnedWorkspace> = workspaces
-        .iter()
-        .filter(|w| w.monitor_name.eq(&monitor.name) && w.id > 0)
-        .map(|w| w.to_owned())
+        .into_iter()
+        .filter(|w| w.monitor_name().eq(&monitor.name()) && w.id() > 0)
         .collect();
     if workspaces_for_monitor.is_empty() {
-        return Err(anyhow::anyhow!("No workspaces found for monitor: {}", &monitor.name));
+        return Err(
+            anyhow::anyhow!(
+                "No workspaces found for monitor: {}",
+                &monitor.name()
+            )
+        );
     }
     workspaces_for_monitor.sort();
     Ok(workspaces_for_monitor.to_owned())
 }
 
-pub fn get_current_workspace(conn: &mut dyn HyprlandClient) -> anyhow::Result<OwnedWorkspace> {
+pub fn get_current_workspace(
+    conn: &mut dyn HyprlandClient
+) -> anyhow::Result<OwnedWorkspace> {
+
     let focused_monitor = get_focused_monitor(conn)?;
-    let active_workspace = focused_monitor.active_workspace;
+    let active_workspace = focused_monitor.active_workspace();
     Ok(active_workspace)
 }
 
-pub fn switch_to_workspace(conn: &mut dyn HyprlandClient, target: &OwnedWorkspace) -> anyhow::Result<()> {
-    conn.go_to_workspace(target.id)?;
+pub fn switch_to_workspace(
+    conn: &mut dyn HyprlandClient,
+    target: &OwnedWorkspace
+) -> anyhow::Result<()> {
+    conn.go_to_workspace(target.id())?;
     Ok(())
 }
 
@@ -43,19 +59,21 @@ pub mod fixtures {
     use crate::domain::{OwnedMonitor, OwnedWorkspace};
 
     pub fn ws(id: i64, mon: &str) -> OwnedWorkspace {
-        OwnedWorkspace {
-            id,
-            monitor_name: mon.to_string(),
-        }
+        OwnedWorkspace::new(id, mon.to_string())
     }
 
-    pub fn mon(name: &str, id: i64, focused: bool, active_id: i64) -> OwnedMonitor {
-        OwnedMonitor {
-            name: name.to_string(),
+    pub fn mon(
+        name: &str,
+        id: i64,
+        focused: bool,
+        active_id: i64
+    ) -> OwnedMonitor {
+        OwnedMonitor::new(
+            name.to_string(),
             id,
             focused,
-            active_workspace: ws(active_id, name),
-        }
+            ws(active_id, name),
+        )
     }
 
     pub fn monitors() -> Vec<OwnedMonitor> {
@@ -91,7 +109,10 @@ mod tests {
         let conn = &mut MockHyprlandClient::new();
         create_mock(conn);
 
-        assert_eq!(get_focused_monitor(conn).unwrap(), fixtures::monitors()[0]);
+        assert_eq!(
+            get_focused_monitor(conn).unwrap(),
+            fixtures::monitors()[0]
+        );
     }
 
     #[test]
@@ -99,10 +120,12 @@ mod tests {
         let conn = &mut MockHyprlandClient::new();
         create_mock(conn);
 
-        assert!(get_workspaces_for_monitor(conn, &fixtures::monitors()[0])
-            .unwrap()
-            .iter()
-            .any(|m| m == &fixtures::workspaces()[0])
+        assert!(get_workspaces_for_monitor(
+            conn,
+            &fixtures::monitors()[0])
+                .unwrap()
+                .iter()
+                .any(|m| m == &fixtures::workspaces()[0])
         );
     }
 
@@ -111,7 +134,10 @@ mod tests {
         let conn = &mut MockHyprlandClient::new();
         create_mock(conn);
 
-        assert_eq!(crate::get_current_workspace(conn).unwrap().id, fixtures::workspaces()[0].id);
+        assert_eq!(
+            get_current_workspace(conn).unwrap().id(),
+            fixtures::workspaces()[0].id()
+        );
     }
 
     #[test]
@@ -122,6 +148,9 @@ mod tests {
         conn.expect_go_to_workspace()
             .times(1)
             .returning(move |_| Ok(()));
-        let _ = crate::switch_to_workspace(conn, &fixtures::workspaces()[0]);
+        let _ = crate::switch_to_workspace(
+            conn,
+            &fixtures::workspaces()[0]
+        );
     }
 }
