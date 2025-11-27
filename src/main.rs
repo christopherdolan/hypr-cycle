@@ -13,9 +13,9 @@ fn main() -> anyhow::Result<()> {
 
     let conn: HyprlandConnection = HyprlandConnection::current()?;
 
-    let monitor: String = get_focused_monitor_name(&conn)?;
-    let workspaces: Vec<i64> = get_workspace_ids_for_monitor(&conn, &monitor)?;
-    let current_ws: i64 = get_current_workspace_id(&conn)?;
+    let monitor: OwnedMonitor = get_focused_monitor(&conn)?;
+    let workspaces: Vec<OwnedWorkspace> = get_workspaces_for_monitor(&conn, &monitor)?;
+    let current_ws: OwnedWorkspace = get_current_workspace_id(&conn)?;
     let idx: usize = workspaces
         .iter()
         .position(|w| w == &current_ws)
@@ -27,7 +27,7 @@ fn main() -> anyhow::Result<()> {
         (idx + workspaces.len() - 1) % workspaces.len()
     };
 
-    let target: i64 = workspaces[next_idx];
-    switch_to_workspace(&conn, target)?;
+    let target: OwnedWorkspace = workspaces[next_idx].clone();
+    switch_to_workspace(&conn, &target)?;
     Ok(())
 }

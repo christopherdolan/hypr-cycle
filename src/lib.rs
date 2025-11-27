@@ -1,45 +1,41 @@
-use hyprrust::commands::prelude::*;
+pub mod domain;
+
+pub use domain::{OwnedMonitor,OwnedWorkspace};
+
 use hyprrust::HyprlandConnection;
 use hyprrust::data::{Monitors,Workspaces};
+use hyprrust::commands::prelude::*;
 
-pub fn get_focused_monitor_name(conn: &HyprlandConnection) -> anyhow::Result<String> {
+pub fn get_focused_monitor(conn: &HyprlandConnection) -> anyhow::Result<OwnedMonitor> {
     let monitors = conn.get_sync::<Monitors>()?;
-    let name = &monitors
+    let monitor = monitors
         .iter()
         .find(|m| m.focused)
-        .ok_or("No focused monitor found")
-        .unwrap()
-        .name;
-    Ok(name.to_owned())
+        .ok_or_else(|| anyhow::anyhow!("No focused monitor found"))?;
+    Ok(monitor.into())
 }
 
-pub fn get_workspace_ids_for_monitor(conn: &HyprlandConnection, monitor: &String) -> anyhow::Result<Vec<i64>> {
+pub fn get_workspaces_for_monitor(conn: &HyprlandConnection, monitor: &OwnedMonitor) -> anyhow::Result<Vec<OwnedWorkspace>> {
     let workspaces = conn.get_sync::<Workspaces>()?;
-    let mut workspace_ids_for_monitor : Vec<i64> = workspaces
+    let mut workspaces_for_monitor : Vec<OwnedWorkspace> = workspaces
         .iter()
-        .filter(|w| w.monitor.eq(monitor) && w.id > 0)
-        .map(|w| w.id)
-        .collect::<Vec<i64>>();
-    if workspace_ids_for_monitor.is_empty() {
-        return Err(anyhow::anyhow!("No workspaces found for monitor: {}", monitor));
+        .filter(|w| w.monitor.eq(&monitor.name) && w.id > 0)
+        .map(|w| w.into())
+        .collect::<Vec<OwnedWorkspace>>();
+    if workspaces_for_monitor.is_empty() {
+        return Err(anyhow::anyhow!("No workspaces found for monitor: {}", &monitor.name));
     }
-    workspace_ids_for_monitor.sort();
-    Ok(workspace_ids_for_monitor.to_owned())
+    workspaces_for_monitor.sort();
+    Ok(workspaces_for_monitor.to_owned())
 }
 
-pub fn get_current_workspace_id(conn: &HyprlandConnection) -> anyhow::Result<i64> {
-    let focused_monitor_name = get_focused_monitor_name(conn)?;
-    let monitors = conn.get_sync::<Monitors>()?;
-    let focused_monitor = monitors
-        .iter()
-        .find(|m| m.name == focused_monitor_name)
-        .ok_or("Focused monitor not found")
-        .unwrap();
-    let active_workspace_id = focused_monitor.active_workspace.id;
-    Ok(active_workspace_id)
+pub fn get_current_workspace_id(conn: &HyprlandConnection) -> anyhow::Result<OwnedWorkspace> {
+    let focused_monitor = get_focused_monitor(conn)?;
+    let active_workspace = focused_monitor.active_workspace;
+    Ok(active_workspace)
 }
 
-pub fn switch_to_workspace(conn: &HyprlandConnection, id: i64) -> anyhow::Result<()> {
-    conn.send_command_sync(&go_to_work_space(WorkspaceArgument::ID(id)))?;
+pub fn switch_to_workspace(conn: &HyprlandConnection, target: &OwnedWorkspace) -> anyhow::Result<()> {
+    conn.send_command_sync(&go_to_work_space(WorkspaceArgument::ID(target.id)))?;
     Ok(())
 }
