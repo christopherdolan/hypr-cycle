@@ -17,7 +17,7 @@ pub fn get_workspaces_for_monitor(conn: &HyprlandConnection, monitor: &String) -
     let workspaces = conn.get_sync::<Workspaces>()?;
     let mut workspace_ids_for_monitor : Vec<i64> = workspaces
         .iter()
-        .filter(|w| w.monitor.eq(monitor))
+        .filter(|w| w.monitor.eq(monitor) && w.id > 0)
         .map(|w| w.id)
         .collect::<Vec<i64>>();
     if workspace_ids_for_monitor.is_empty() {
