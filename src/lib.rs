@@ -2,7 +2,7 @@ use hyprrust::commands::prelude::*;
 use hyprrust::HyprlandConnection;
 use hyprrust::data::{Monitors,Workspaces};
 
-pub fn get_focused_monitor(conn: &HyprlandConnection) -> anyhow::Result<String> {
+pub fn get_focused_monitor_name(conn: &HyprlandConnection) -> anyhow::Result<String> {
     let monitors = conn.get_sync::<Monitors>()?;
     let name = &monitors
         .iter()
@@ -13,7 +13,7 @@ pub fn get_focused_monitor(conn: &HyprlandConnection) -> anyhow::Result<String> 
     Ok(name.to_owned())
 }
 
-pub fn get_workspaces_for_monitor(conn: &HyprlandConnection, monitor: &String) -> anyhow::Result<Vec<i64>> {
+pub fn get_workspace_ids_for_monitor(conn: &HyprlandConnection, monitor: &String) -> anyhow::Result<Vec<i64>> {
     let workspaces = conn.get_sync::<Workspaces>()?;
     let mut workspace_ids_for_monitor : Vec<i64> = workspaces
         .iter()
@@ -27,8 +27,8 @@ pub fn get_workspaces_for_monitor(conn: &HyprlandConnection, monitor: &String) -
     Ok(workspace_ids_for_monitor.to_owned())
 }
 
-pub fn get_current_workspace(conn: &HyprlandConnection) -> anyhow::Result<i64> {
-    let focused_monitor_name = get_focused_monitor(conn)?;
+pub fn get_current_workspace_id(conn: &HyprlandConnection) -> anyhow::Result<i64> {
+    let focused_monitor_name = get_focused_monitor_name(conn)?;
     let monitors = conn.get_sync::<Monitors>()?;
     let focused_monitor = monitors
         .iter()
