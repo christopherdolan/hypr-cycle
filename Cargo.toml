@@ -6,6 +6,8 @@ edition = "2021"
 license = "MIT"
 repository = "https://github.com/christopherdolan/hypr-cycle"
 description = "A fast and monitor-aware workspace cycler for Hyprland, written in Rust."
+readme = "README.md"
+keywords = ["hyprland"]
 
 [dependencies]
 anyhow = "1"
