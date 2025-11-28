@@ -1,8 +1,8 @@
 pub mod connection;
 pub mod domain;
 
-pub use domain::{OwnedMonitor,OwnedWorkspace};
-pub use connection::HyprlandClient;
+use domain::{OwnedMonitor,OwnedWorkspace};
+use connection::HyprlandClient;
 
 pub fn get_focused_monitor(conn: &mut dyn HyprlandClient)
     -> anyhow::Result<OwnedMonitor> {
