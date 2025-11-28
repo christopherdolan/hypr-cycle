@@ -8,6 +8,9 @@ repository = "https://github.com/christopherdolan/hypr-cycle"
 description = "A fast and monitor-aware workspace cycler for Hyprland, written in Rust."
 readme = "README.md"
 keywords = ["hyprland"]
+exclude = [
+  ".github/"
+]
 
 [dependencies]
 anyhow = "1"
