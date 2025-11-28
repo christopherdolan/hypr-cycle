@@ -5,8 +5,10 @@ use clap::Parser;
 use hyprrust::HyprlandConnection;
 
 #[derive(Parser)]
+#[command(version, about, long_about = None)]
 struct Args {
     #[arg(default_value = "next")]
+    /// Direction to switch workspace ('next' or 'prev')
     direction: String,
 }
 
@@ -28,8 +30,10 @@ fn main() -> anyhow::Result<()> {
 
     let next_idx = if args.direction == "next" {
         (idx + 1) % workspaces.len()
-    } else {
+    } else if args.direction == "prev" {
         (idx + workspaces.len() - 1) % workspaces.len()
+    } else {
+        return Err(anyhow::anyhow!("Direction must be 'next' or 'prev'"));
     };
 
     let target = workspaces[next_idx].clone();
