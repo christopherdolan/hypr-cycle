@@ -142,7 +142,7 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hypr-cycle"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -152,9 +152,9 @@ dependencies = [
 
 [[package]]
 name = "hyprrust"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "522ce55cf7e788be812b94ca77ffdec45a6ef69325e50729ffd0188ce4e73ac8"
+checksum = "17759c3828e5a7ac038cb0a4a9cb02e40861f11984974c8a7c1965f097273753"
 dependencies = [
  "hyprrust_macros",
  "log",

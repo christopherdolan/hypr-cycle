@@ -1,6 +1,6 @@
 [package]
 name = "hypr-cycle"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Christopher Dolan <siricandobhikkhu@gmail.com>"]
 edition = "2021"
 license = "MIT"
@@ -15,7 +15,7 @@ exclude = [
 [dependencies]
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
-hyprrust = { version = "0.2.0", features = ["sync"], default-features = false }
+hyprrust = { version = "0.2.1", features = ["sync"], default-features = false }
 
 [dev-dependencies]
 mockall = "0.14.0"
