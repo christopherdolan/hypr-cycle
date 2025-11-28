@@ -1,7 +1,7 @@
 # hypr-cycle
 
 <p align="center">
-  <video src="https://github.com/christopherdolan/hypr-cycle/releases/download/v0.4.0/demo.mp4" autoplay loop muted playsinline width="720"></video>
+  <video src="https://github.com/user-attachments/assets/df5e5d89-56ec-418e-9d30-19ff901f6c6d" autoplay loop muted playsinline width="720"></video>
 </p>
 
 A fast, minimal Rust utility to cycle through workspaces on the **currently focused monitor** in [Hyprland](https://github.com/hyprwm/Hyprland). Unlike `hyprctl dispatch workspace e+1`, this tool avoids switching workspaces to a different monitor in multi-monitor setups. Unlike `hyprctl dispatch focusworkspaceoncurrentmonitor next`, this will only switch to workspaces with windows on them.
