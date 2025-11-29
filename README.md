@@ -30,7 +30,6 @@ If you've got the [Rust tools](https://rust-lang.org/tools/install/) installed, 
 ### Arch Linux (via the AUR)
 
 - Requires [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-- Requires [Rust](https://rust-lang.org/tools/install/).
 
 1. Clone the repo:
   ``` bash
