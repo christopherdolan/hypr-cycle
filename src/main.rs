@@ -1,17 +1,11 @@
-// TODO: Have RealHyprlandClient build the connection itself
-use hyprrust::HyprlandConnection;
-use connection::RealHyprlandClient;
-use hypr_cycle::*;
+use hypr_cycle::Args;
+use hypr_cycle::HyprCycle;
 
 fn main() -> anyhow::Result<()> {
-    let conn = &mut RealHyprlandClient::new(HyprlandConnection::current()?);
-    let monitor = get_focused_monitor(conn)?;
-    let workspaces = get_workspaces_for_monitor(conn,&monitor)?;
-    let current_ws = get_current_workspace(conn)?;
-
-    let args = Args::parse();
+    let mut svc = HyprCycle::real();
+    let args = Args::parse_args();
     let direction = args.direction;
-    let target = get_target_workspace(workspaces, current_ws, direction)?;
+    let target = svc.get_target_workspace(direction)?;
 
-    switch_to_workspace(conn, &target)
+    svc.switch_to_workspace(&target)
 }
