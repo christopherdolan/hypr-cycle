@@ -18,9 +18,9 @@ impl FromStr for Direction {
         let s = s.trim().to_ascii_lowercase();
 
         match s.as_str() {
-            "next" => Ok(Direction::Next),
-            x if ["prev","previous"].contains(&x) => Ok(Direction::Previous),
-            _ => Err("Unrecognized direction"),
+            "next"     => Ok(Direction::Next),
+            "previous" => Ok(Direction::Previous),
+                     _ => Err("Unrecognized direction"),
         }
     }
 }

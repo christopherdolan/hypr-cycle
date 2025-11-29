@@ -78,8 +78,8 @@ yay hypr-cycle
 ## Usage
 
 ```bash
+hypr-cycle previous
 hypr-cycle next
-hypr-cycle prev
 ```
 
 This will cycle to the next or previous numbered workspace **on the monitor that currently has keyboard focus**.
@@ -91,8 +91,8 @@ This will cycle to the next or previous numbered workspace **on the monitor that
 If you want to change workspaces using Mod+Tab and Mod+Shift+Tab, add these bindings to your `~/.config/hypr/hyprland.conf`:
 
 ```ini
+bind = $mod SHIFT, Tab, exec, hypr-cycle previous
 bind = $mod, Tab, exec, hypr-cycle next
-bind = $mod SHIFT, Tab, exec, hypr-cycle prev
 ```
 
 ---
@@ -104,7 +104,7 @@ If you want to change workspaces on Waybar using your mouse wheel, add these to 
 ```jsonc
         "hyprland/workspaces": {
             // ...
-            "on-scroll-up":"hypr-cycle prev",
+            "on-scroll-up":"hypr-cycle previous",
             "on-scroll-down":"hypr-cycle next",
             // ...
         },
