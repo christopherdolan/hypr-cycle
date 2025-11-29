@@ -1,3 +1,6 @@
+use clap::Parser;
+
+use crate::args::Args;
 use crate::connection::HyprlandClient;
 use crate::domain::{Direction,OwnedMonitor,OwnedWorkspace};
 
@@ -9,6 +12,10 @@ pub struct HyprCycle {
 }
 
 impl HyprCycle {
+
+    pub fn parse_args() -> Args {
+        Args::parse()
+    }
 
     /// The connection can be real or a mock object, as seen in the tests
     /// in `src/service.rs`.

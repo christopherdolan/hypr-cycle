@@ -5,7 +5,7 @@ use crate::domain::Direction;
 #[command(version, about, long_about = None)]
 pub struct Args {
     #[arg(default_value = "next")]
-    /// Direction to switch workspace ('next' or 'prev[ious]')
+    /// Direction to switch workspace ('next' or 'previous')
     pub direction: Direction,
 }
 
