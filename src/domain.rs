@@ -109,6 +109,10 @@ impl OwnedWorkspace {
     pub fn monitor_name(&self) -> String {
         self.monitor_name.clone()
     }
+
+    pub fn visible(&self) -> bool {
+        self.id > 0
+    }
 }
 
 impl From<&Workspace> for OwnedWorkspace {
