@@ -12,19 +12,18 @@ pub enum Direction {
 }
 
 impl FromStr for Direction {
-    type Err  = &'static str;
+    type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let s = s.trim().to_ascii_lowercase();
 
         match s.as_str() {
-            "next"     => Ok(Direction::Next),
+            "next" => Ok(Direction::Next),
             "previous" => Ok(Direction::Previous),
-                     _ => Err("Unrecognized direction"),
+            _ => Err("Unrecognized direction"),
         }
     }
 }
-
 
 /// Wraps the hyprrust::Monitor type, which describes a physical monitor
 /// reported by Hyprland.
@@ -45,14 +44,14 @@ impl OwnedMonitor {
         name: String,
         id: i64,
         focused: bool,
-        active_workspace: OwnedWorkspace
+        active_workspace: OwnedWorkspace,
     ) -> OwnedMonitor {
-       OwnedMonitor {
+        OwnedMonitor {
             name,
             id,
             focused,
-            active_workspace
-        } 
+            active_workspace,
+        }
     }
 
     pub fn name(&self) -> String {
@@ -80,7 +79,7 @@ impl From<&Monitor> for OwnedMonitor {
             focused: m.focused,
             active_workspace: OwnedWorkspace {
                 id: m.active_workspace.id,
-                monitor_name: m.name.clone()
+                monitor_name: m.name.clone(),
             },
         }
     }
@@ -94,7 +93,7 @@ impl From<&Monitor> for OwnedMonitor {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OwnedWorkspace {
     id: i64,
-    monitor_name: String
+    monitor_name: String,
 }
 
 impl OwnedWorkspace {
@@ -117,13 +116,19 @@ impl OwnedWorkspace {
 
 impl From<&Workspace> for OwnedWorkspace {
     fn from(w: &Workspace) -> Self {
-        OwnedWorkspace { id: w.id, monitor_name: w.monitor.clone() }
+        OwnedWorkspace {
+            id: w.id,
+            monitor_name: w.monitor.clone(),
+        }
     }
 }
 
 impl From<&WorkspaceBrief> for OwnedWorkspace {
     fn from(w: &WorkspaceBrief) -> Self {
-        OwnedWorkspace { id: w.id, monitor_name: String::new() }
+        OwnedWorkspace {
+            id: w.id,
+            monitor_name: String::new(),
+        }
     }
 }
 

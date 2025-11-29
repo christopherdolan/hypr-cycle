@@ -1,5 +1,5 @@
-use clap::Parser;
 use crate::domain::Direction;
+use clap::Parser;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]

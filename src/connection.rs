@@ -1,8 +1,8 @@
 use crate::domain::{OwnedMonitor, OwnedWorkspace};
 
-use hyprrust::HyprlandConnection;
-use hyprrust::data::{Monitors, Workspaces};
 use hyprrust::commands::prelude::*;
+use hyprrust::data::{Monitors, Workspaces};
+use hyprrust::HyprlandConnection;
 
 use anyhow::Result;
 

@@ -2,7 +2,7 @@ use clap::Parser;
 
 use crate::args::Args;
 use crate::connection::HyprlandClient;
-use crate::domain::{Direction,OwnedMonitor,OwnedWorkspace};
+use crate::domain::{Direction, OwnedMonitor, OwnedWorkspace};
 
 /// Represents the total functionality of the program.
 /// It can inspect the connected monitors, the extant workspaces,
@@ -12,7 +12,6 @@ pub struct HyprCycle {
 }
 
 impl HyprCycle {
-
     pub fn parse_args() -> Args {
         Args::parse()
     }
@@ -20,9 +19,7 @@ impl HyprCycle {
     /// The connection can be real or a mock object, as seen in the tests
     /// in `src/service.rs`.
     pub fn new(connection: Box<dyn HyprlandClient>) -> HyprCycle {
-        HyprCycle {
-            connection
-        }
+        HyprCycle { connection }
     }
 
     /// This function builds a version of the service backed by a real
@@ -35,9 +32,7 @@ impl HyprCycle {
 
     /// In Hyprland, only one monitor can be in focus at a time.
     /// This function returns that monitor.
-    pub fn get_focused_monitor(&mut self)
-        -> anyhow::Result<OwnedMonitor> {
-
+    pub fn get_focused_monitor(&mut self) -> anyhow::Result<OwnedMonitor> {
         let monitors = self.connection.get_monitors()?;
         let monitor = monitors
             .iter()
@@ -51,21 +46,18 @@ impl HyprCycle {
     /// bound to it.
     pub fn get_workspaces_for_monitor(
         &mut self,
-        monitor: &OwnedMonitor
+        monitor: &OwnedMonitor,
     ) -> anyhow::Result<Vec<OwnedWorkspace>> {
-
         let workspaces = self.connection.get_workspaces()?;
-        let mut workspaces_for_monitor : Vec<OwnedWorkspace> = workspaces
+        let mut workspaces_for_monitor: Vec<OwnedWorkspace> = workspaces
             .into_iter()
             .filter(|w| w.monitor_name().eq(&monitor.name()) && w.visible())
             .collect();
         if workspaces_for_monitor.is_empty() {
-            return Err(
-                anyhow::anyhow!(
-                    "No workspaces found for monitor: {}",
-                    &monitor.name()
-                )
-            );
+            return Err(anyhow::anyhow!(
+                "No workspaces found for monitor: {}",
+                &monitor.name()
+            ));
         }
         workspaces_for_monitor.sort();
         Ok(workspaces_for_monitor.to_owned())
@@ -73,7 +65,6 @@ impl HyprCycle {
 
     /// Returns the workspace that's active on the monitor that's in focus
     pub fn get_current_workspace(&mut self) -> anyhow::Result<OwnedWorkspace> {
-
         let focused_monitor = self.get_focused_monitor()?;
         let active_workspace = focused_monitor.active_workspace();
         Ok(active_workspace)
@@ -81,9 +72,7 @@ impl HyprCycle {
 
     /// The index of the sorted list of workspaces tells us where to
     /// target the upcoming workspace switch.
-    pub fn get_target_workspace(&mut self, direction: Direction)
-    -> anyhow::Result<OwnedWorkspace> {
-
+    pub fn get_target_workspace(&mut self, direction: Direction) -> anyhow::Result<OwnedWorkspace> {
         let monitor = &self.get_focused_monitor()?;
         let workspaces = &self.get_workspaces_for_monitor(monitor)?;
         let current_ws = &self.get_current_workspace()?;
@@ -101,14 +90,10 @@ impl HyprCycle {
         Ok(workspaces[next_idx].to_owned())
     }
 
-    pub fn switch_to_workspace(
-        &mut self,
-        target: &OwnedWorkspace
-    ) -> anyhow::Result<()> {
+    pub fn switch_to_workspace(&mut self, target: &OwnedWorkspace) -> anyhow::Result<()> {
         self.connection.go_to_workspace(target.id())?;
         Ok(())
     }
-
 }
 
 #[cfg(test)]
@@ -119,32 +104,31 @@ pub mod fixtures {
         OwnedWorkspace::new(id, mon.to_string())
     }
 
-    pub fn mon(name: &str, id: i64, focused: bool, active_id: i64
-    ) -> OwnedMonitor {
+    pub fn mon(name: &str, id: i64, focused: bool, active_id: i64) -> OwnedMonitor {
         OwnedMonitor::new(name.to_string(), id, focused, ws(active_id, name))
     }
 
     pub fn monitors() -> Vec<OwnedMonitor> {
-        vec!(
-            mon("eDP-1" , 1, true , 1), //active monitor
+        vec![
+            mon("eDP-1", 1, true, 1), //active monitor
             mon("HDMI-1", 2, false, 3),
-        )
+        ]
     }
 
     pub fn workspaces() -> Vec<OwnedWorkspace> {
-        vec!(
+        vec![
             ws(-97, "eDP-1"), //hidden workspace ("scratch")
-            ws(  1, "eDP-1"),
-            ws(  2, "eDP-1"),
-            ws(  3, "HDMI-1")
-        )
+            ws(1, "eDP-1"),
+            ws(2, "eDP-1"),
+            ws(3, "HDMI-1"),
+        ]
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::connection::{MockHyprlandClient};
+    use crate::connection::MockHyprlandClient;
 
     fn mock_service_with(conn: MockHyprlandClient) -> HyprCycle {
         HyprCycle::new(Box::new(conn))
@@ -152,26 +136,24 @@ mod tests {
 
     fn mock_service() -> HyprCycle {
         let mut conn = MockHyprlandClient::new();
-        conn.expect_get_monitors().returning(|| Ok(fixtures::monitors()));
-        conn.expect_get_workspaces().returning(|| Ok(fixtures::workspaces()));
+        conn.expect_get_monitors()
+            .returning(|| Ok(fixtures::monitors()));
+        conn.expect_get_workspaces()
+            .returning(|| Ok(fixtures::workspaces()));
         mock_service_with(conn)
     }
 
     fn visible_for_monitor(
         ws: impl IntoIterator<Item = OwnedWorkspace>,
-        monitor: &OwnedMonitor
+        monitor: &OwnedMonitor,
     ) -> Vec<OwnedWorkspace> {
         ws.into_iter()
             .filter(|w| w.visible() && w.monitor_name() == monitor.name())
             .collect()
     }
 
-    fn focused_monitor(
-        monitors: impl IntoIterator<Item = OwnedMonitor>
-    ) -> OwnedMonitor {
-        monitors.into_iter()
-            .find(|m| m.focused())
-            .unwrap()
+    fn focused_monitor(monitors: impl IntoIterator<Item = OwnedMonitor>) -> OwnedMonitor {
+        monitors.into_iter().find(|m| m.focused()).unwrap()
     }
 
     /// There are two monitors in the fixture. One is marked active.
@@ -193,20 +175,20 @@ mod tests {
         let mut hs = mock_service();
 
         let target_monitor = &fixtures::monitors()[0];
-        let mut target_workspaces =
-            hs.get_workspaces_for_monitor(target_monitor).unwrap();
+        let mut target_workspaces = hs.get_workspaces_for_monitor(target_monitor).unwrap();
 
         // All of the returned workspaces are visible
         assert!(target_workspaces.iter().all(|w| w.visible()));
 
         // All of the returned workspaces match the argument monitor's name
-        assert!(target_workspaces.iter().all(|w|
-                w.monitor_name() == target_monitor.name()));
+        assert!(target_workspaces
+            .iter()
+            .all(|w| w.monitor_name() == target_monitor.name()));
 
         // Filter the whole list of workspaces to get only the expected returns
         let mut expected_workspaces: Vec<_> =
             visible_for_monitor(fixtures::workspaces(), target_monitor);
-       
+
         // All of the expected workspaces are present
         // (we sort the collections first, because eq() is order-dependent)
         expected_workspaces.sort();
@@ -221,7 +203,7 @@ mod tests {
     #[test]
     fn test_get_current_workspace() {
         let mut hs = mock_service();
-        
+
         let expected = focused_monitor(fixtures::monitors())
             .active_workspace()
             .id();
@@ -234,9 +216,7 @@ mod tests {
     #[test]
     fn test_switch_to_workspace() {
         let mut conn = MockHyprlandClient::new();
-        conn.expect_go_to_workspace()
-            .times(1)
-            .returning(|_| Ok(()));
+        conn.expect_go_to_workspace().times(1).returning(|_| Ok(()));
         let mut hs = mock_service_with(conn);
 
         let _ = hs.switch_to_workspace(&fixtures::workspaces()[0]);
