@@ -19,7 +19,18 @@ A fast, minimal Rust utility to cycle through workspaces on the **currently focu
 
 ## Installation
 
+### Cargo
+
+If you've got the [Rust tools](https://rust-lang.org/tools/install/) installed, this is probably the easiest way to get it.
+
+```bash
+  cargo install hypr-cycle
+```
+
 ### Arch Linux (via the AUR)
+
+- Requires [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+- Requires [Rust](https://rust-lang.org/tools/install/).
 
 1. Clone the repo:
   ``` bash
@@ -34,8 +45,18 @@ A fast, minimal Rust utility to cycle through workspaces on the **currently focu
   ```
 
 ... or just install `hypr-cycle` via your favorite AUR helper.
+(This is the only method that doesn't require you to have Rust tools installed.)
+
+- Example requires [yay](https://github.com/Jguer/yay?tab=readme-ov-file#installation), but any AUR helper will do.
+
+```bash
+yay hypr-cycle
+```
 
 ### From Source
+
+- Requires [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+- Requires [Rust](https://rust-lang.org/tools/install/).
 
 1. Clone the repo:
    ```bash
