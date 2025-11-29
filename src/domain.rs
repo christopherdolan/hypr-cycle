@@ -1,5 +1,30 @@
 use std::cmp::Ordering;
+use std::str::FromStr;
+
+use clap::ValueEnum;
 use hyprrust::data::{Monitor, Workspace, WorkspaceBrief};
+
+/// Represents the direction argument when invoked from the command line.
+#[derive(Debug, Clone, ValueEnum)]
+pub enum Direction {
+    Next,
+    Previous,
+}
+
+impl FromStr for Direction {
+    type Err  = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let s = s.trim().to_ascii_lowercase();
+
+        match s.as_str() {
+            "next" => Ok(Direction::Next),
+            x if ["prev","previous"].contains(&x) => Ok(Direction::Previous),
+            _ => Err("Unrecognized direction"),
+        }
+    }
+}
+
 
 /// Wraps the hyprrust::Monitor type, which describes a physical monitor
 /// reported by Hyprland.
