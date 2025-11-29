@@ -19,3 +19,9 @@ hyprrust = { version = "0.2.1", features = ["sync"], default-features = false }
 
 [dev-dependencies]
 mockall = "0.14.0"
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1
