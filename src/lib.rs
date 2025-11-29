@@ -1,12 +1,21 @@
 pub mod connection;
 pub mod domain;
 
-use std::str::FromStr;
-use clap::{ValueEnum};
+pub use clap::{Parser,ValueEnum};
 
+use std::str::FromStr;
 use domain::{OwnedMonitor,OwnedWorkspace};
 use connection::HyprlandClient;
 
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+pub struct Args {
+    #[arg(default_value = "next")]
+    /// Direction to switch workspace ('next' or 'prev[ious]')
+    pub direction: Direction,
+}
+
+/// Represents the direction argument when invoked from the command line.
 #[derive(Debug, Clone, ValueEnum)]
 pub enum Direction {
     Next,
@@ -27,6 +36,8 @@ impl FromStr for Direction {
     }
 }
 
+/// In Hyprland, only one monitor can be in focus at a time.
+/// This function returns that monitor.
 pub fn get_focused_monitor(conn: &mut dyn HyprlandClient)
     -> anyhow::Result<OwnedMonitor> {
 
@@ -63,6 +74,7 @@ pub fn get_workspaces_for_monitor(
     Ok(workspaces_for_monitor.to_owned())
 }
 
+/// Returns the workspace that's active on the monitor that's in focus
 pub fn get_current_workspace(
     conn: &mut dyn HyprlandClient
 ) -> anyhow::Result<OwnedWorkspace> {
