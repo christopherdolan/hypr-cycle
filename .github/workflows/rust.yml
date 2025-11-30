@@ -17,6 +17,9 @@ jobs:
     steps:
     - name: Set up Rust
       uses: actions/checkout@v4
+    - name: Install cargo-binstall
+      run: curl -L https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz \
+          | tar -xz -C ~/.cargo/bin
     - name: Install cargo-audit
       run: cargo binstall cargo-audit --no-confirm
     - name: Build
