@@ -54,8 +54,8 @@ impl OwnedMonitor {
         }
     }
 
-    pub fn name(&self) -> String {
-        self.name.clone()
+    pub fn name(&self) -> &String {
+        &self.name
     }
 
     pub fn id(&self) -> i64 {
@@ -105,8 +105,8 @@ impl OwnedWorkspace {
         self.id
     }
 
-    pub fn monitor_name(&self) -> String {
-        self.monitor_name.clone()
+    pub fn monitor_name(&self) -> &String {
+        &self.monitor_name
     }
 
     pub fn visible(&self) -> bool {

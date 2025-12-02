@@ -33,39 +33,39 @@ impl HyprCycle {
 
     /// In Hyprland, only one monitor can be in focus at a time.
     /// This function returns that monitor.
-    pub fn get_focused_monitor(&mut self) -> Result<OwnedMonitor> {
+    pub fn get_focused_monitor(&self) -> Result<OwnedMonitor> {
         let monitors = self.connection.get_monitors()?;
         let monitor = monitors
-            .iter()
+            .into_iter()
             .find(|m| m.focused())
             .ok_or_else(|| anyhow::anyhow!("No focused monitor found"))?;
-        Ok(monitor.to_owned())
+        Ok(monitor)
     }
 
     /// Returns a sorted list of the workspaces bound to the provided monitor.
     /// Throws an error if the provided monitor doesn't have any workspaces
     /// bound to it.
     pub fn get_workspaces_for_monitor(
-        &mut self,
+        &self,
         monitor: &OwnedMonitor,
     ) -> Result<Vec<OwnedWorkspace>> {
         let workspaces = self.connection.get_workspaces()?;
         let mut workspaces_for_monitor: Vec<OwnedWorkspace> = workspaces
             .into_iter()
-            .filter(|w| w.monitor_name().eq(&monitor.name()) && w.visible())
+            .filter(|w| w.monitor_name().eq(monitor.name()) && w.visible())
             .collect();
         if workspaces_for_monitor.is_empty() {
             return Err(anyhow::anyhow!(
                 "No workspaces found for monitor: {}",
-                &monitor.name()
+                monitor.name()
             ));
         }
         workspaces_for_monitor.sort();
-        Ok(workspaces_for_monitor.to_owned())
+        Ok(workspaces_for_monitor)
     }
 
     /// Returns the workspace that's active on the monitor that's in focus
-    pub fn get_current_workspace(&mut self) -> Result<OwnedWorkspace> {
+    pub fn get_current_workspace(&self) -> Result<OwnedWorkspace> {
         let focused_monitor = self.get_focused_monitor()?;
         let active_workspace = focused_monitor.active_workspace();
         Ok(active_workspace)
@@ -73,7 +73,7 @@ impl HyprCycle {
 
     /// The index of the sorted list of workspaces tells us where to
     /// target the upcoming workspace switch.
-    pub fn get_target_workspace(&mut self, direction: Direction) -> Result<OwnedWorkspace> {
+    pub fn get_target_workspace(&self, direction: Direction) -> Result<OwnedWorkspace> {
         let monitor = &self.get_focused_monitor()?;
         let workspaces = &self.get_workspaces_for_monitor(monitor)?;
         let current_ws = &self.get_current_workspace()?;
@@ -91,7 +91,7 @@ impl HyprCycle {
         Ok(workspaces[next_idx].to_owned())
     }
 
-    pub fn switch_to_workspace(&mut self, target: &OwnedWorkspace) -> Result<()> {
+    pub fn switch_to_workspace(&self, target: &OwnedWorkspace) -> Result<()> {
         self.connection.go_to_workspace(target.id())?;
         Ok(())
     }
@@ -163,7 +163,7 @@ mod tests {
     /// This test ensures that the focused monitor is returned by the function.
     #[test]
     fn test_get_focused_monitor() -> Result<()> {
-        let mut hs = mock_service();
+        let hs = mock_service();
         let expected = focused_monitor(fixtures::monitors())?;
         let returned = hs.get_focused_monitor()?;
         assert_eq!(returned.name(), expected.name());
@@ -175,7 +175,7 @@ mod tests {
     /// by the function.
     #[test]
     fn test_get_workspaces_for_monitor() -> Result<()> {
-        let mut hs = mock_service();
+        let hs = mock_service();
 
         let target_monitor = &fixtures::monitors()[0];
         let mut target_workspaces = hs.get_workspaces_for_monitor(target_monitor)?;
@@ -206,7 +206,7 @@ mod tests {
     /// active workspace.
     #[test]
     fn test_get_current_workspace() -> Result<()> {
-        let mut hs = mock_service();
+        let hs = mock_service();
         let expected = focused_monitor(fixtures::monitors())?;
         let returned = hs.get_current_workspace()?;
         assert_eq!(returned.id(), expected.active_workspace().id());
@@ -219,7 +219,7 @@ mod tests {
     fn test_switch_to_workspace() {
         let mut conn = MockHyprlandClient::new();
         conn.expect_go_to_workspace().times(1).returning(|_| Ok(()));
-        let mut hs = mock_service_with(conn);
+        let hs = mock_service_with(conn);
 
         let _ = hs.switch_to_workspace(&fixtures::workspaces()[0]);
     }
