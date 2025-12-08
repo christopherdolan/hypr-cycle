@@ -1,7 +1,8 @@
+use anyhow::Context;
 use hypr_cycle::HyprCycle;
 
 fn main() -> anyhow::Result<()> {
-    let mut svc = HyprCycle::real();
+    let mut svc = HyprCycle::real().context("Are you sure you're running Hyprland?")?;
 
     let args = HyprCycle::parse_args();
     let direction = args.direction;
