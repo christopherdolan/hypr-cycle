@@ -34,25 +34,26 @@ If you've got the [Rust tools](https://rust-lang.org/tools/install/) installed, 
 - Requires [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
 1. Clone the repo:
-  ``` bash
-  git clone https://aur.archlinux.org/hypr-cycle.git
-  ```
+
+```bash
+git clone https://aur.archlinux.org/hypr-cycle.git
+```
 
 2. Make and install
 
-  ``` bash
-  cd hypr-cycle
-  makepkg -si
-  ```
+```bash
+cd hypr-cycle
+makepkg -si
+```
 
 ... or just install `hypr-cycle` via your favorite AUR helper.
 (This is the only method that doesn't require you to have Rust tools installed.)
 
 - Example requires [yay](https://github.com/Jguer/yay?tab=readme-ov-file#installation), but any AUR helper will do.
 
-```bash
-yay hypr-cycle
-```
+  ```bash
+  yay hypr-cycle
+  ```
 
 ### From Source
 
@@ -60,12 +61,14 @@ yay hypr-cycle
 - Requires [Rust](https://rust-lang.org/tools/install/).
 
 1. Clone the repo:
+
    ```bash
    git clone https://github.com/christopherdolan/hypr-cycle
    cd hypr-cycle
    ```
 
 2. Build and install:
+
    ```bash
    cargo build --release
    sudo install -Dm755 target/release/hypr-cycle /usr/local/bin/hypr-cycle
