@@ -18,19 +18,19 @@ impl FromStr for Direction {
         let s = s.trim().to_ascii_lowercase();
 
         match s.as_str() {
-            "next" => Ok(Direction::Next),
-            "previous" => Ok(Direction::Previous),
+            "next" => Ok(Self::Next),
+            "previous" => Ok(Self::Previous),
             _ => Err("Unrecognized direction"),
         }
     }
 }
 
-/// Wraps the hyprrust::Monitor type, which describes a physical monitor
+/// Wraps the `hyprrust::Monitor` type, which describes a physical monitor
 /// reported by Hyprland.
 ///
 /// Each monitor has a unique name and ID. Only one monitor is marked 'focused'
 /// at any time.
-/// This type is returned by 'HyprlandClient::get_monitors()'.
+/// This type is returned by `HyprlandClient::get_monitors()`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OwnedMonitor {
     name: String,
@@ -40,13 +40,13 @@ pub struct OwnedMonitor {
 }
 
 impl OwnedMonitor {
-    pub fn new(
+    pub const fn new(
         name: String,
         id: i64,
         focused: bool,
         active_workspace: OwnedWorkspace,
-    ) -> OwnedMonitor {
-        OwnedMonitor {
+    ) -> Self {
+        Self {
             name,
             id,
             focused,
@@ -54,15 +54,15 @@ impl OwnedMonitor {
         }
     }
 
-    pub fn name(&self) -> &String {
+    pub const fn name(&self) -> &String {
         &self.name
     }
 
-    pub fn id(&self) -> i64 {
+    pub const fn id(&self) -> i64 {
         self.id
     }
 
-    pub fn focused(&self) -> bool {
+    pub const fn focused(&self) -> bool {
         self.focused
     }
 
@@ -73,7 +73,7 @@ impl OwnedMonitor {
 
 impl From<&Monitor> for OwnedMonitor {
     fn from(m: &Monitor) -> Self {
-        OwnedMonitor {
+        Self {
             name: m.name.clone(),
             id: m.id,
             focused: m.focused,
@@ -85,11 +85,11 @@ impl From<&Monitor> for OwnedMonitor {
     }
 }
 
-/// Wraps the hyprrust::Workspace type, which describes a workspace reported
+/// Wraps the `hyprrust::Workspace` type, which describes a workspace reported
 /// by Hyprland.
 ///
 /// Each workspace has a unique ID and is associated with exactly one monitor.
-/// This type is returned by 'HyprlandClient::get_workspaces()'.
+/// This type is returned by `HyprlandClient::get_workspaces()`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OwnedWorkspace {
     id: i64,
@@ -97,26 +97,26 @@ pub struct OwnedWorkspace {
 }
 
 impl OwnedWorkspace {
-    pub fn new(id: i64, monitor_name: String) -> OwnedWorkspace {
-        OwnedWorkspace { id, monitor_name }
+    pub const fn new(id: i64, monitor_name: String) -> Self {
+        Self { id, monitor_name }
     }
 
-    pub fn id(&self) -> i64 {
+    pub const fn id(&self) -> i64 {
         self.id
     }
 
-    pub fn monitor_name(&self) -> &String {
+    pub const fn monitor_name(&self) -> &String {
         &self.monitor_name
     }
 
-    pub fn visible(&self) -> bool {
+    pub const fn visible(&self) -> bool {
         self.id > 0
     }
 }
 
 impl From<&Workspace> for OwnedWorkspace {
     fn from(w: &Workspace) -> Self {
-        OwnedWorkspace {
+        Self {
             id: w.id,
             monitor_name: w.monitor.clone(),
         }
@@ -125,7 +125,7 @@ impl From<&Workspace> for OwnedWorkspace {
 
 impl From<&WorkspaceBrief> for OwnedWorkspace {
     fn from(w: &WorkspaceBrief) -> Self {
-        OwnedWorkspace {
+        Self {
             id: w.id,
             monitor_name: String::new(),
         }

@@ -11,6 +11,6 @@ pub struct Args {
 
 impl Args {
     pub fn parse_args() -> Self {
-        Args::parse()
+        Self::parse()
     }
 }

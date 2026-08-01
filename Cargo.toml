@@ -8,9 +8,7 @@ repository = "https://github.com/christopherdolan/hypr-cycle"
 description = "A fast and monitor-aware workspace cycler for Hyprland, written in Rust."
 readme = "README.md"
 keywords = ["hyprland"]
-exclude = [
-  ".github/"
-]
+exclude = [".github/"]
 
 [dependencies]
 anyhow = "1.0.100"
@@ -25,3 +23,21 @@ strip = true
 opt-level = "z"
 lto = true
 codegen-units = 1
+
+[lints.clippy]
+pedantic = { level = "deny", priority = -1 }
+nursery = { level = "deny", priority = -1 }
+# DENY PANICS:
+unwrap_used = "deny"
+expect_used = "deny"
+indexing_slicing = "deny"
+arithmetic_side_effects = "deny"
+unreachable = "deny"
+unimplemented = "deny"
+unchecked_time_subtraction = "deny"
+todo = "deny"
+string_slice = "deny"
+panic_in_result_fn = "deny"
+panic = "deny"
+exit = "deny"
+as_conversions = "deny"

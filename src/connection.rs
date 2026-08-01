@@ -6,7 +6,7 @@ use hyprrust::HyprlandConnection;
 
 use anyhow::Result;
 
-/// Exposes the necessary fraction of the hyprrust::HyprlandConnection struct.
+/// Exposes the necessary fraction of the `hyprrust::HyprlandConnection` struct.
 #[cfg_attr(test, mockall::automock)]
 pub trait HyprlandClient {
     fn get_monitors(&self) -> Result<Vec<OwnedMonitor>>;
@@ -14,14 +14,14 @@ pub trait HyprlandClient {
     fn go_to_workspace(&self, id: i64) -> Result<()>;
 }
 
-/// Real adapter around hyprrust::HyprlandConnection.
+/// Real adapter around `hyprrust::HyprlandConnection`.
 /// Converts hyprrust types into Owned domain types at the boundary.
 pub struct RealHyprlandClient {
     conn: HyprlandConnection,
 }
 
 impl RealHyprlandClient {
-    pub fn new(conn: HyprlandConnection) -> Self {
+    pub const fn new(conn: HyprlandConnection) -> Self {
         Self { conn }
     }
 }
